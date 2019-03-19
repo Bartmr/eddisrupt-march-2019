@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import './App.css';
 import NavBar from './components/shared/nav-bar/nav-bar';
-import LoginPage from './components/pages/login/login';
 import { AppContext, appInitialState } from './app-context';
-
-
+import { BrowserRouter, Route } from 'react-router-dom'
+import HomePage from './components/pages/home/home';
+import SecretsPage from './components/pages/secrets/secrets';
+import LoginPage from './components/pages/login/login';
 
 class App extends Component {
   constructor(props) {
@@ -16,12 +17,16 @@ class App extends Component {
   }
   render() {
     return (
-      <AppContext.Provider value={this.state}>
-        <div className="App">
-          <NavBar></NavBar>
-          <LoginPage></LoginPage>
-        </div>
-      </AppContext.Provider>
+      <div className="App">
+        <AppContext.Provider value={this.state}>
+          <BrowserRouter>
+            <NavBar></NavBar>
+            <Route path="/" exact component={HomePage} />
+            <Route path="/secrets" exact component={SecretsPage} />
+            <Route path="/login" exact component={LoginPage} />
+          </BrowserRouter>
+        </AppContext.Provider>
+      </div>
     );
   }
 }
