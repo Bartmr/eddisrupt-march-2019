@@ -1,11 +1,9 @@
 const express = require('express')
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser')
 
 const app = express();
 
 app.use(bodyParser.json());
-app.use(cookieParser());
 
 let authenticationToken;
 
@@ -14,9 +12,8 @@ app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
     if(username === 'admin' && password === 'admin') {
-      authenticationToken = 'Token';
-      res.cookie('uat', authenticationToken, {expires: new Date(Date.now() + 432000000)})
-      return res.send('authenticated')
+      authenticationToken = 'abcdef';
+      return res.send({token: authenticationToken})
     } else {
       return res.status(401).send('Wrong Credentials')
     }
@@ -25,8 +22,8 @@ app.post('/login', (req, res) => {
   return res.status(400).send('forgot to send credentials');
 });
 
-app.get('/the-goods', (req, res) => {
-  if(authenticationToken && req.cookies['uat'] === authenticationToken) {
+app.get('/secrets', (req, res) => {
+  if(authenticationToken && req.get('Authorization') === authenticationToken) {
     return res.send([
       {
         name: 'Saint Pepsi - Private Caller',
@@ -46,13 +43,13 @@ app.get('/the-goods', (req, res) => {
       }
     ])
   } else {
-    return res.status(401).cookie('uat', '').send('Not authenticated')
+    return res.status(401).send('Not authenticated')
   }
 });
 
 app.get('/reset-authentication', (req, res) => {
   authenticationToken = undefined;
-  res.send('Done')
+  res.send('Authentication was reset')
 });
 
 app.listen(3001, () => console.log('Listening on port 3001'))
