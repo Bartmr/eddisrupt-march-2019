@@ -1,7 +1,10 @@
 import React from 'react'
 import Form from './components/form';
+import {AppContext} from '../../../app-context';
 
 export default class LoginPage extends React.Component {
+  static contextType = AppContext;
+
   constructor(props) {
     super(props);
 
@@ -25,12 +28,12 @@ export default class LoginPage extends React.Component {
   render() {
     return (
       <div style={{paddingTop: '30px'}}>
-        <Form
+        {this.context.session.isLoading ? 'Loading' : <Form
           username={this.state.username}
           password={this.state.password}
           onUsernameChange={this.onUsernameChange}
           onPasswordChange={this.onPasswordChange}
-        />
+        />}
       </div>
     )
   }
