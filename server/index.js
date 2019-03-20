@@ -5,6 +5,12 @@ const app = express();
 
 app.use(bodyParser.json());
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 let authenticationToken;
 
 app.post('/login', (req, res) => {
@@ -13,7 +19,8 @@ app.post('/login', (req, res) => {
 
     if(username === 'admin' && password === 'admin') {
       authenticationToken = 'abcdef';
-      return res.send({token: authenticationToken})
+
+      return setTimeout(() => res.send({token: authenticationToken}), 3000)
     } else {
       return res.status(401).send('Wrong Credentials')
     }
@@ -24,7 +31,7 @@ app.post('/login', (req, res) => {
 
 app.get('/secrets', (req, res) => {
   if(authenticationToken && req.get('Authorization') === authenticationToken) {
-    return res.send([
+    return setTimeout(() => res.send([
       {
         name: 'Saint Pepsi - Private Caller',
         url: 'https://www.youtube.com/watch?v=Ki-fATpXa00'
@@ -41,7 +48,7 @@ app.get('/secrets', (req, res) => {
         name: 'https://www.youtube.com/watch?v=8GW6sLrK40k',
         url: 'HOME - Resonance'
       }
-    ])
+    ]), 3000);
   } else {
     return res.status(401).send('Not authenticated')
   }
