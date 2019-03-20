@@ -19,7 +19,7 @@ export default class Form extends React.Component {
             <label>Password</label>
             <input type="password" className="form-control" value={this.props.password} onChange={this.props.onPasswordChange}/>
           </div>
-          <button type="submit" className="btn btn-primary">Submit</button>
+          <button onClick={this.props.onLoginClick} className="btn btn-primary">Submit</button>
         </form>
       </div>
     )

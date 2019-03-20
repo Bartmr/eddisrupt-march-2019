@@ -11,10 +11,54 @@ class App extends Component {
   constructor(props) {
     super(props);
 
+    this.login = this.login.bind(this);
+
     this.state = {
-      ...appInitialState
+      ...appInitialState,
+      login: this.login
     }
   }
+
+  componentDidMount() {
+    const previousSessionToken = window.localStorage.getItem('sessionToken');
+
+    this.setState({
+      session: {...this.state.session, token: previousSessionToken}
+    })
+  }
+
+  login(username, password) {
+    const body = JSON.stringify({ username, password });
+
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      'Content-Length': body.length.toString()
+    })
+
+    this.setState({session: {...this.state.session, isLoading: true}})
+    
+    fetch('http://localhost:3001/login', {
+      method: 'POST',
+      body,
+      headers
+    })
+      .then((res) => {
+        if(res.ok) { return res.json() }
+        else { throw new Error() }
+      })
+      .then((data) => {
+        window.localStorage.setItem('sessionToken', data.token);
+        this.setState({
+          session: {...this.state.session, isLoading: false, token: data.token}
+        })
+      })
+      .catch(() => {
+        this.setState({
+          session: {...this.state.session, isLoading: false}
+        })
+      })
+  }
+
   render() {
     return (
       <div className="App">
